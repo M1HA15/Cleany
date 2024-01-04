@@ -1,4 +1,4 @@
-# 🧹 Cleany (0.1)
+# 🧹 Cleany
 
 ## 🚀 Introduction:
 Cleany is a powerful script designed to streamline the cleanup process on Windows systems, optimizing performance and freeing up disk space. This script is intended for users with administrator privileges and leverages PowerShell to perform various system maintenance tasks.
