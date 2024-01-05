@@ -31,8 +31,9 @@ Get the latest version of the script from the [Releases](https://github.com/M1HA
      [1] Yes
      [2] No
      [3] View potential risks
+     [4] Create a Restore Point
 
-   Enter your choice (1-3): 3
+   Enter your choice (1-4): 3
 
 
    ---------------------------------------------------------------------
@@ -51,8 +52,9 @@ Get the latest version of the script from the [Releases](https://github.com/M1HA
      [1] Yes
      [2] No
      [3] View potential risks
+     [4] Create a Restore Point
 
-   Enter your choice (1-3): 1
+   Enter your choice (1-4): 1
 
    Proceeding with the script...
    ```
