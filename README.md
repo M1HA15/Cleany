@@ -3,7 +3,7 @@
 ## 🚀 Introduction:
 Cleany is a powerful script designed to streamline the cleanup process on Windows systems, optimizing performance and freeing up disk space. This script is intended for users with administrator privileges and leverages PowerShell to perform various system maintenance tasks.
 
-## 💻 Key Features
+## 💻 Key Features:
 - 🔰 **Administrator Privileges and PowerShell Check**: Ensures seamless execution by verifying that the script is run with administrator privileges and within a PowerShell environment. This script leverages PowerShell for efficient system cleanup tasks.
 
 - ⚒️ **Comprehensive System Cleanup Tasks:**
@@ -72,13 +72,13 @@ If you wish to do so, please restart your computer to apply the cleanup changes.
      We appreciate you using the script. Your computer will restart shortly!
      ```
 
-## ⚠️ Disclaimer
+## ⚠️ Disclaimer:
 This script is provided as-is, and the author takes no responsibility for any damage, loss of data, or unforeseen consequences caused by its usage. Additionally, be sure to understand the implications of the cleanup tasks, including potential risks associated with deleting system files, stopping essential services, and other actions, before running Cleany on your system! Use this script at your own risk
 
-## 📝 Contributing
+## 📝 Contributing:
 We welcome contributions! Please read the [Contributing Guidelines](https://github.com/M1HA15/Cleany/blob/main/CONTRIBUTING.md) before submitting issues or pull requests.
 
-## 🚧 Report Issues
+## 🚧 Report Issues:
 If you encounter any issues, please [report them here](https://github.com/M1HA15/Cleany/issues).
 
 Your feedback is valuable in improving the script!
@@ -89,5 +89,5 @@ Your feedback is valuable in improving the script!
 ## 🙏 Acknowledgments:
 **Thank you for choosing Cleany**! Special gratitude to you, the user, for your support and for choosing to utilize this script.
 
-## 📃 License
+## 📃 License:
 This project is licensed under the GPL-3.0 License - see the [LICENSE](https://github.com/M1HA15/Cleany/blob/main/LICENSE) file for details.
