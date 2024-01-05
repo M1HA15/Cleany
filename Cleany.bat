@@ -25,7 +25,7 @@ for /f "delims=" %%V in ('powershell -Command "$PSVersionTable.PSVersion.Major.T
 )
 
 echo ---------------------------------------------------------------------
-echo                               Cleany (0.1)
+echo                               Cleany (0.2)
 echo.
 echo     Warning: The script is running with administrator privileges!
 echo           Warning: This version may contain bugs or issues!
@@ -34,27 +34,32 @@ echo ---------------------------------------------------------------------
 echo.
 echo.
 
+timeout 1 /nobreak >nul
+
 :displayMenu
+echo.
 echo Would you like to continue?
 echo    [1] Yes
 echo    [2] No
 echo    [3] View potential risks
+echo    [4] Create a Restore Point
 echo.
-set /p "choice=Enter your choice (1-3): "
+set /p "choice=Enter your choice (1-4): "
 
 if "%choice%"=="1" (
-	echo.
+    echo.
     echo Proceeding with the script...
-	goto :cleany
 	echo.
+	echo.
+    goto :cleany
 ) else if "%choice%"=="2" (
-	echo.
+    echo.
     echo Script aborted!
-    timeout /nobreak /t 5 > nul
+    timeout /nobreak /t 3 > nul
     exit
 ) else if "%choice%"=="3" (
-	echo.
-	echo.
+    echo.
+    echo.
     echo ---------------------------------------------------------------------
     echo                          POTENTIAL RISKS
     echo ---------------------------------------------------------------------
@@ -64,19 +69,31 @@ if "%choice%"=="1" (
     echo 4. Cleaning system logs may impact troubleshooting capabilities.
     echo 5. Deleting Windows Update files might affect future updates.
     echo ---------------------------------------------------------------------
-	echo.
-	echo.
+    echo.
+    echo.
+    echo.
+    goto :displayMenu
+) else if "%choice%"=="4" (
+    echo.
+    echo Opening System Restore Point... 
+	echo Please manually create a Restore Point!
+    start "" /wait "C:\Windows\System32\SystemPropertiesProtection.exe"
+    echo.
+    echo It is suspected that you have created a Restore Point.
+    echo.
 	echo.
     goto :displayMenu
 ) else (
+    echo.
     echo You have chosen an invalid option! Please select a correct option...
-	echo.
+    echo.
     goto :displayMenu
 )
 
 :cleany
 echo --- Restarting Explorer ---
 taskkill /F /IM explorer.exe
+echo Explorer has been terminated. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -103,6 +120,7 @@ DEL /F /Q %userprofile%\recent\*.*
 DEL /F /S /Q "%userprofile%\Local Settings\Temporary Internet Files\*.*"
 DEL /F /S /Q "%userprofile%\Local Settings\Temp\*.*"
 DEL /F /S /Q "%userprofile%\recent\*.*"
+echo Temporary files have been deleted. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -112,6 +130,7 @@ echo --- Restarting Explorer ---
 Invoke-Command COMPUTERNAME -command{Stop-Process -ProcessName Explorer}
 Invoke-Command COMPUTERNAME -command{Start-Process -ProcessName Explorer}
 powershell Start explorer.exe
+echo Explorer has been turned back on. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -121,6 +140,7 @@ echo --- Stopping Services ---
 net stop UsoSvc
 net stop bits
 net stop dosvc
+echo Services have been stopped. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -130,6 +150,7 @@ echo --- Deleting Windows Update Files ---
 echo Please wait while unnecessary update files are being removed...
 rd /s /q C:\Windows\SoftwareDistribution
 md C:\Windows\SoftwareDistribution
+echo echo Windows Update files have been deleted. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -139,6 +160,7 @@ echo --- Cleaning System Logs ---
 echo Removing unnecessary log files..
 cd /
 del *.log /a /s /q /f
+echo All System Logs have been deleted. Proceeding to the next step...
 
 timeout 5 /nobreak >nul
 
@@ -146,10 +168,14 @@ echo.
 
 echo --- Running Windows Cleaner ---
 echo Initiating cleanmgr.exe...
-start "" /wait "C:\Windows\System32\cleanmgr.exe" /sagerun:50 
+start "" /wait "C:\Windows\System32\cleanmgr.exe" /sagerun:10
+echo Windows Cleaner has been run 10 times.
+echo.
 
 timeout 5 /nobreak >nul
 
+echo.
+echo Your computer has been cleaned!
 echo.
 
 :setNSR
@@ -159,7 +185,7 @@ if /i "%skipNSR%"=="Y" (
     start "" "https://github.com/M1HA15/Network-Settings-Reset"
 ) else if /i "%skipNSR%"=="N" (
 	echo Skiping this section...
-	goto: setRestart
+	goto :setRestart
 ) else (
 	echo You have chosen an invalid option! Please select a correct option...
 	echo.
