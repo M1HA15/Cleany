@@ -27,49 +27,36 @@ Get the latest version of the script from the [Releases](https://github.com/M1HA
 
 3. **🚨 Evaluate Risks & Choose to Proceed:**
    ```bash
-   Would you like to continue?
-     [1] Yes
-     [2] No
-     [3] View potential risks
-     [4] Create a Restore Point
-
-   Enter your choice (1-4): 3
-
-
    ---------------------------------------------------------------------
-                         POTENTIAL RISKS
-   ---------------------------------------------------------------------
-   1. Deleting system files may cause instability or loss of data.
-   2. Stopping essential services can affect system functionality.
-   3. Restarting Explorer may temporarily interrupt desktop experience.
-   4. Cleaning system logs may impact troubleshooting capabilities.
-   5. Deleting Windows Update files might affect future updates.
+                     Potential Risks While Running Cleany
    ---------------------------------------------------------------------
 
+   - Deleting system files may cause instability or loss of data.
 
+   - Stopping essential services can affect system functionality.
 
-   Would you like to continue?
-     [1] Yes
-     [2] No
-     [3] View potential risks
-     [4] Create a Restore Point
+   - Restarting Explorer may temporarily interrupt desktop experience.
 
-   Enter your choice (1-4): 1
+   - Cleaning system logs may impact troubleshooting capabilities.
 
-   Proceeding with the script...
+   - Deleting Windows Update files might affect future updates.
    ```
 
 4. **📢 Explore the author's other project (Optional):**
    ```bash
-   Want to check out our other project? (Y/N): Y
+   Do you want to open the Cleany GitHub Page? (Y/N): Y
+   Opening default web browser...
+
+   Do you want to check NSR? (Y/N): Y
    Opening default web browser...
    ```
 
 5. **🌌 Restart (Optional):**
 If you wish to do so, please restart your computer to apply the cleanup changes.
      ```bash
-     Do you want to restart the computer now? (Y/N): Y
-     We appreciate you using the script. Your computer will restart shortly!
+   Do you want to restart the computer now? (Y/N): Y
+
+   Thank you for utilizing the script! Your computer will restart shortly...
      ```
 
 ## ⚠️ Disclaimer:
