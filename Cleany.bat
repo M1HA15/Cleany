@@ -1,7 +1,8 @@
 @echo off
-title Cleany (0.3)
+title Cleany (0.4)
 cls
 
+:: Check if PowerShell is installed
 where powershell >nul 2>&1
 if %errorlevel% neq 0 (
     color 0C
@@ -11,8 +12,10 @@ if %errorlevel% neq 0 (
     exit
 )
 
+:: Get PowerShell Version
 for /f "delims=" %%V in ('powershell -Command "$PSVersionTable.PSVersion.Major.ToString() + '.' + $PSVersionTable.PSVersion.Minor.ToString()"') do set "PSVersion=%%V"
 
+:: Check for Administrator Privileges
 >nul 2>&1 net session || (
     color 0C
     echo This script requires Administrator Privileges.
@@ -27,7 +30,7 @@ for /f "delims=" %%V in ('powershell -Command "$PSVersionTable.PSVersion.Major.T
 :mainMenu
 cls
 echo ---------------------------------------------------------------------
-echo                              Cleany (0.3)
+echo                              Cleany (0.4)
 echo.
 echo           Warning: This version may contain bugs or issues!
 echo                 Running with Administrator Privileges
@@ -85,7 +88,7 @@ echo                      Info About Script
 echo ---------------------------------------------------------------------
 echo.
 echo Script Name: Cleany
-echo Version: 0.3
+echo Version: 0.4
 echo Author: M1HA15
 echo Beta Version: %betaVersion%
 echo.
@@ -201,7 +204,7 @@ if /i "%skipRestartChoice%"=="Y" (
     echo Thank you for using the script! Please remember to restart your computer when convenient.
     exit
 ) else (
-    echo You have chosen an invalid option! Please select a correct option...
+    echo Invalid option selected! Returning to main menu...
     echo.
     goto :mainMenu
 )
