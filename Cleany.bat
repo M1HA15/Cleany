@@ -1,5 +1,6 @@
 @echo off
-title Cleany (0.5)
+setlocal enabledelayedexpansion
+title Cleany (0.5.1)
 cls
 
 where powershell >nul 2>&1
@@ -30,9 +31,9 @@ for /f "tokens=2 delims=[]" %%G in ('ver') do set WINVER=%%G
 :mainMenu
 cls
 echo =====================================================================
-echo                              Cleany (0.5)
+echo                            Cleany (0.5.1)
 echo.
-echo           Warning: This version may contain bugs or issues!
+echo                        STABLE RELEASE - Bug Fixes
 echo                 Running with Administrator Privileges
 echo                    PowerShell Version: %PSVersion%
 echo                    Windows Version: %WINVER%
@@ -91,7 +92,7 @@ echo                      Info About Script
 echo =====================================================================
 echo.
 echo Script Name: Cleany
-echo Version: 0.5
+echo Version: 0.5.1
 echo Author: M1HA15
 echo Beta Version: %betaVersion%
 echo Compatibility: All Windows versions (10/11, Tiny, Atlas, FSOS, etc.)
@@ -132,6 +133,9 @@ if exist "C:\Windows\System32\SystemPropertiesProtection.exe" (
 echo.
 echo It is assumed that you have created a Restore Point.
 echo.
+pause
+echo Starting cleanup process...
+echo.
 
 echo --- Stopping Explorer ---
 taskkill /F /IM explorer.exe >nul 2>&1
@@ -140,35 +144,38 @@ if %errorlevel%==0 (
 ) else (
     echo Explorer was not running or could not be terminated.
 )
+timeout /t 2 /nobreak >nul
 
 echo.
 
 echo --- Stopping Services ---
 echo Attempting to stop Windows Update services...
+
 sc query UsoSvc >nul 2>&1
 if %errorlevel%==0 (
     net stop UsoSvc >nul 2>&1
-    if %errorlevel%==0 (echo - UsoSvc stopped successfully.) else (echo - UsoSvc could not be stopped or is not running.)
+    if %errorlevel%==0 (echo - UsoSvc stopped.) else (echo - UsoSvc skip.)
 ) else (
-    echo - UsoSvc not found on this system.
+    echo - UsoSvc not found.
 )
 
 sc query bits >nul 2>&1
 if %errorlevel%==0 (
     net stop bits >nul 2>&1
-    if %errorlevel%==0 (echo - BITS stopped successfully.) else (echo - BITS could not be stopped or is not running.)
+    if %errorlevel%==0 (echo - BITS stopped.) else (echo - BITS skip.)
 ) else (
-    echo - BITS not found on this system.
+    echo - BITS not found.
 )
 
 sc query dosvc >nul 2>&1
 if %errorlevel%==0 (
     net stop dosvc >nul 2>&1
-    if %errorlevel%==0 (echo - Delivery Optimization stopped successfully.) else (echo - Delivery Optimization could not be stopped or is not running.)
+    if %errorlevel%==0 (echo - Delivery Optimization stopped.) else (echo - Delivery Optimization skip.)
 ) else (
-    echo - Delivery Optimization not found on this system.
+    echo - Delivery Optimization not found.
 )
 echo Services processing completed.
+timeout /t 1 /nobreak >nul
 
 echo.
 
@@ -187,16 +194,12 @@ echo Cleaning system drive temporary files...
 if exist "%systemdrive%\" (
     DEL /F /S /Q "%systemdrive%\*.tmp" >nul 2>&1
     DEL /F /S /Q "%systemdrive%\*._mp" >nul 2>&1
-    DEL /F /S /Q "%systemdrive%\*.log" >nul 2>&1
     DEL /F /S /Q "%systemdrive%\*.gid" >nul 2>&1
     DEL /F /S /Q "%systemdrive%\*.chk" >nul 2>&1
     DEL /F /S /Q "%systemdrive%\*.old" >nul 2>&1
 )
 
 echo Cleaning Recycle Bin...
-if exist "%systemdrive%\recycled\" (
-    DEL /F /S /Q "%systemdrive%\recycled\*.*" >nul 2>&1
-)
 if exist "%systemdrive%\$Recycle.Bin\" (
     DEL /F /S /Q "%systemdrive%\$Recycle.Bin\*.*" >nul 2>&1
 )
@@ -218,76 +221,102 @@ if exist "%windir%\temp\" (
 )
 
 echo Cleaning user profile temporary files...
-if exist "%userprofile%\cookies\" (
-    DEL /F /Q "%userprofile%\cookies\*.*" >nul 2>&1
-)
-if exist "%userprofile%\recent\" (
-    DEL /F /Q "%userprofile%\recent\*.*" >nul 2>&1
-)
-if exist "%userprofile%\AppData\Local\Microsoft\Windows\Temporary Internet Files\" (
-    DEL /F /S /Q "%userprofile%\AppData\Local\Microsoft\Windows\Temporary Internet Files\*.*" >nul 2>&1
-)
 if exist "%userprofile%\AppData\Local\Temp\" (
     DEL /F /S /Q "%userprofile%\AppData\Local\Temp\*.*" >nul 2>&1
 )
-echo Temporary files have been cleaned successfully.
+echo Temporary files cleaned successfully.
+timeout /t 1 /nobreak >nul
 
 echo.
 
-echo --- Deleting Windows Update Files ---
-echo Please wait while unnecessary update files are being removed...
-if exist "C:\Windows\SoftwareDistribution\" (
-    rd /s /q "C:\Windows\SoftwareDistribution" >nul 2>&1
-    if %errorlevel%==0 (
-        md "C:\Windows\SoftwareDistribution" >nul 2>&1
-        echo Windows Update files have been deleted successfully.
-    ) else (
-        echo WARNING: Could not delete some Windows Update files (may be in use).
-    )
+echo --- Cleaning Windows Update Cache ---
+echo Please wait while update cache is being cleared...
+if exist "C:\Windows\SoftwareDistribution\Download\" (
+    DEL /F /S /Q "C:\Windows\SoftwareDistribution\Download\*.*" >nul 2>&1
+    echo Windows Update cache cleared successfully.
 ) else (
-    echo SoftwareDistribution folder not found (custom Windows version detected).
+    echo Update cache folder not found.
 )
+timeout /t 1 /nobreak >nul
 
 echo.
 
 echo --- Cleaning System Logs ---
-echo Removing unnecessary log files...
+echo Clearing event logs...
 set "logCount=0"
 for /f "tokens=*" %%G in ('wevtutil el 2^>nul') do (
     wevtutil cl "%%G" >nul 2>&1
     if !errorlevel!==0 set /a logCount+=1
 )
-echo Cleared %logCount% event logs successfully.
+echo Cleared !logCount! event logs successfully.
+timeout /t 1 /nobreak >nul
 
 echo.
 
 echo --- Running Disk Cleanup ---
 echo Initiating disk cleanup utility...
 if exist "C:\Windows\System32\cleanmgr.exe" (
-    cleanmgr /sagerun:10
-    echo Disk Cleanup has been completed.
+    start /wait cleanmgr /sagerun:10
+    echo Disk Cleanup completed.
 ) else (
-    echo Disk Cleanup utility not found on this Windows version.
-    echo Skipping this step...
+    echo Disk Cleanup utility not found.
 )
+timeout /t 1 /nobreak >nul
+
+echo.
+
+echo --- Restarting Services ---
+echo Restarting stopped services...
+sc query bits >nul 2>&1
+if %errorlevel%==0 (
+    net start bits >nul 2>&1
+    if %errorlevel%==0 (echo - BITS restarted.) else (echo - BITS already running.)
+)
+
+sc query UsoSvc >nul 2>&1
+if %errorlevel%==0 (
+    net start UsoSvc >nul 2>&1
+    if %errorlevel%==0 (echo - UsoSvc restarted.) else (echo - UsoSvc already running.)
+)
+
+sc query dosvc >nul 2>&1
+if %errorlevel%==0 (
+    net start dosvc >nul 2>&1
+    if %errorlevel%==0 (echo - Delivery Optimization restarted.) else (echo - Delivery Optimization already running.)
+)
+timeout /t 2 /nobreak >nul
 
 echo.
 
 echo --- Restarting Explorer ---
+echo Starting Explorer...
 start explorer.exe
-timeout /t 2 /nobreak >nul
+timeout /t 3 /nobreak >nul
+
 tasklist /FI "IMAGENAME eq explorer.exe" 2>NUL | find /I /N "explorer.exe">NUL
 if %errorlevel%==0 (
-    echo Explorer has been restarted successfully.
+    echo Explorer restarted successfully!
 ) else (
-    echo WARNING: Explorer may not have restarted properly.
-    echo Please restart it manually if needed.
+    echo WARNING: Explorer may not have started. Trying again...
+    start explorer.exe
+    timeout /t 3 /nobreak >nul
+    tasklist /FI "IMAGENAME eq explorer.exe" 2>NUL | find /I /N "explorer.exe">NUL
+    if %errorlevel%==0 (
+        echo Explorer restarted successfully!
+    ) else (
+        echo ERROR: Explorer failed to start. Please restart manually.
+        echo Press Ctrl+Shift+Esc, File, New Task, type: explorer.exe
+        pause
+    )
 )
 
 echo.
 echo =====================================================================
-echo Your computer has been cleaned successfully!
+echo Cleanup completed successfully!
 echo =====================================================================
+echo.
+echo NOTE: If your desktop is not visible, press Ctrl+Shift+Esc
+echo Then: File ^> Run new task ^> Type: explorer.exe ^> OK
 echo.
 pause
 goto :mainMenu
@@ -300,14 +329,14 @@ echo =====================================================================
 echo.
 set /p "skipRestartChoice=Do you want to restart the computer now? (Y/N): "
 if /i "%skipRestartChoice%"=="Y" (
-    echo Thank you for using Cleany! Your computer will restart shortly...
+    echo Thank you for using Cleany! Restarting in 5 seconds...
     shutdown /r /t 5 /f
 ) else if /i "%skipRestartChoice%"=="N" (
-    echo Thank you for using Cleany! Please remember to restart your computer when convenient.
+    echo Thank you for using Cleany! Restart recommended.
     timeout /t 2 /nobreak >nul
     exit
 ) else (
-    echo Invalid option selected! Returning to main menu...
+    echo Invalid option! Returning to main menu...
     timeout /t 2 /nobreak >nul
     goto :mainMenu
 )
